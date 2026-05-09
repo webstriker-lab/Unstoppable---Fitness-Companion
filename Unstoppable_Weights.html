@@ -23,6 +23,7 @@
   .metric-watch { color: #c00000; font-weight: bold; }
   .summary { margin-top: 14px; padding-top: 12px; border-top: 1px dashed #aaa; font-size: 13px; color: #444; }
   .summary span { font-weight: bold; color: #0a0a0a; }
+  .logic { background: #f7f0dc; border-left: 4px solid #d4a800; padding: 10px 12px; margin: 10px 0; font-size: 12px; color: #4a3a00; }
   .day { background: #fff; border: 1.5px solid #0a0a0a; border-radius: 4px; margin: 16px 0; padding: 16px; scroll-margin-top: 220px; }
   .day h3 { margin: 0 0 4px; font-size: 17px; }
   .day .sub { color: #888; font-size: 12px; margin-bottom: 10px; }
@@ -234,6 +235,99 @@ const isolationByCycle = {
   17: 'Lying leg curl', 18: 'Standing calf raise',
 };
 
+const lowerPlyo = {
+  2: ['Box jump, 16 inch box', '3 x 6', '90 sec'],
+  3: ['Box jump, 16 inch box', '4 x 5', '90 sec'],
+  4: ['Box jump, 20 inch box', '4 x 5', '90 sec'],
+  5: ['Box jump, 20 inch box', '4 x 4', '90 sec'],
+  6: ['Box jump, 24 inch box', '4 x 3', '120 sec'],
+  8: ['Depth jump from 12 inch box', '3 x 4', '120 sec'],
+  9: ['Depth jump from 12 inch box', '4 x 4', '120 sec'],
+  10: ['Depth jump from 16 inch box', '4 x 3', '120 sec'],
+  11: ['Depth jump from 18 inch box', '4 x 3', '120 sec'],
+  12: ['Depth jump from 18 inch box', '5 x 3', '120 sec'],
+  14: ['Reactive box jump, max effort', '4 x 3', '150 sec'],
+  15: ['Reactive box jump, max effort', '5 x 3', '150 sec'],
+  16: ['Depth jump to max vertical, 12 inch box', '5 x 2', '150 sec'],
+  17: ['Depth jump to max vertical, 16 inch box', '5 x 2', '180 sec'],
+  18: ['Depth jump to max vertical, 18 inch box', '6 x 2', '180 sec'],
+};
+
+const upperPlyo = {
+  2: ['Plyo push-up, hands leave floor', '3 x 5', '90 sec'],
+  3: ['Plyo push-up, hands leave floor', '4 x 4', '90 sec'],
+  4: ['Plyo push-up, hands leave floor', '4 x 5', '90 sec'],
+  5: ['Plyo push-up with clap', '4 x 4', '90 sec'],
+  6: ['Clap push-up', '4 x 3', '120 sec'],
+  8: ['Clap push-up', '3 x 5', '90 sec'],
+  9: ['Clap push-up', '4 x 4', '90 sec'],
+  10: ['Plyo push-up onto low box, alternating', '4 x 4', '120 sec'],
+  11: ['Plyo push-up onto low box, alternating', '4 x 3', '120 sec'],
+  12: ['Plyo push-up with box transition', '5 x 3', '120 sec'],
+  14: ['Plyo push-up with box transition', '4 x 3', '150 sec'],
+  15: ['Plyo push-up with box transition', '5 x 3', '150 sec'],
+  16: ['Reactive depth push-up from low box', '5 x 2', '150 sec'],
+  17: ['Reactive depth push-up from low box', '5 x 2', '180 sec'],
+  18: ['Reactive depth push-up, max effort', '6 x 2', '180 sec'],
+};
+
+const conditioning = {
+  2: '6 rounds, 30 sec hard run, 90 sec easy',
+  3: '7 rounds, 30 sec hard run, 90 sec easy',
+  4: '8 rounds, 30 sec hard run, 90 sec easy',
+  5: '8 rounds, 30 sec hard run, 75 sec easy',
+  6: '8 rounds, 30 sec hard run, 60 sec easy',
+  8: '8 rounds, 30 sec hard run, 60 sec easy',
+  9: '9 rounds, 30 sec hard run, 60 sec easy',
+  10: '10 rounds, 30 sec hard run, 60 sec easy',
+  11: '10 rounds, 30 sec hard run, 45 sec easy',
+  12: '10 rounds, 30 sec hard run, 30 sec easy',
+  14: '10 rounds, 30 sec hard run, 30 sec easy',
+  15: '11 rounds, 30 sec hard run, 30 sec easy',
+  16: '12 rounds, 30 sec hard run, 30 sec easy',
+  17: '12 rounds, 40 sec hard run, 30 sec easy',
+  18: '12 rounds, 45 sec hard run, 30 sec easy',
+};
+
+const repProgression = {
+  bss: {2:'3 x 10',3:'3 x 10',4:'3 x 8',5:'3 x 8',6:'3 x 8',8:'3 x 8',9:'3 x 8',10:'3 x 6',11:'3 x 6',12:'3 x 6',14:'3 x 6',15:'3 x 5',16:'3 x 5',17:'3 x 5',18:'3 x 5'},
+  ohp: {2:'3 x 8',3:'3 x 8',4:'3 x 6',5:'3 x 6',6:'3 x 6',8:'3 x 6',9:'3 x 6',10:'3 x 5',11:'3 x 5',12:'3 x 5',14:'3 x 5',15:'3 x 5',16:'3 x 4',17:'3 x 4',18:'3 x 4'},
+  row: {2:'3 x 10',3:'3 x 10',4:'3 x 8',5:'3 x 8',6:'3 x 8',8:'3 x 8',9:'3 x 8',10:'3 x 6',11:'3 x 6',12:'3 x 6',14:'3 x 6',15:'3 x 6',16:'3 x 5',17:'3 x 5',18:'3 x 5'},
+  legPress: {2:'3 x 10',3:'3 x 10',4:'3 x 8',5:'3 x 8',6:'3 x 8',8:'3 x 8',9:'3 x 8',10:'3 x 6',11:'3 x 6',12:'3 x 6',14:'3 x 6',15:'3 x 6',16:'3 x 5',17:'3 x 5',18:'3 x 5'},
+  pushPress: {2:'3 x 8',3:'3 x 8',4:'3 x 6',5:'3 x 6',6:'3 x 6',8:'3 x 6',9:'3 x 6',10:'3 x 5',11:'3 x 5',12:'3 x 5',14:'3 x 5',15:'3 x 5',16:'3 x 4',17:'3 x 4',18:'3 x 4'},
+  hipThrust: {2:'3 x 10',3:'3 x 10',4:'3 x 8',5:'3 x 8',6:'3 x 8',8:'3 x 8',9:'3 x 8',10:'3 x 8',11:'3 x 6',12:'3 x 6',14:'3 x 6',15:'3 x 6',16:'3 x 6',17:'3 x 5',18:'3 x 5'},
+};
+
+const athleticCircuit = {
+  2: [['Squat hold (isometric)','3 x 20 sec','30 sec'], ['Pogo jumps in place','3 x 15','60 sec'], ['Wall sit','3 x 30 sec','45 sec'], ['Calf raises','3 x 15','45 sec'], ['Lateral line hops','3 x 20 sec','60 sec']],
+  3: [['Squat hold','3 x 25 sec','30 sec'], ['Pogo jumps','3 x 18','60 sec'], ['Wall sit','3 x 35 sec','45 sec'], ['Calf raises','3 x 18','45 sec'], ['Lateral line hops','3 x 25 sec','60 sec']],
+  4: [['Squat hold','3 x 30 sec','30 sec'], ['Pogo jumps','3 x 20','60 sec'], ['Wall sit','3 x 40 sec','45 sec'], ['Calf raises','3 x 20','45 sec'], ['Lateral line hops','3 x 30 sec','60 sec']],
+  5: [['Squat hold','3 x 30 sec','30 sec'], ['Pogo jumps','3 x 22','60 sec'], ['Wall sit','3 x 45 sec','45 sec'], ['Calf raises','3 x 22','45 sec'], ['Lateral line hops','3 x 30 sec','60 sec']],
+  6: [['Squat hold','3 x 35 sec','30 sec'], ['Pogo jumps','3 x 25','60 sec'], ['Wall sit','3 x 50 sec','45 sec'], ['Calf raises','3 x 25','45 sec'], ['Lateral line hops','3 x 35 sec','60 sec']],
+  8: [['Depth jump from 12 inch box','3 x 4','120 sec'], ['Bounding for distance','3 x 15 metres','90 sec'], ['Lateral bounds','3 x 4 each side','90 sec'], ['Medicine ball slams','3 x 6','60 sec']],
+  9: [['Depth jump from 12 inch box','4 x 4','120 sec'], ['Bounding for distance','3 x 18 metres','90 sec'], ['Lateral bounds','3 x 5 each side','90 sec'], ['Medicine ball slams','3 x 8','60 sec']],
+  10: [['Depth jump from 16 inch box','4 x 4','120 sec'], ['Bounding for distance','3 x 20 metres','90 sec'], ['Lateral bounds','3 x 6 each side','90 sec'], ['Medicine ball slams','3 x 8','60 sec']],
+  11: [['Depth jump from 18 inch box','4 x 3','120 sec'], ['Bounding for distance','3 x 22 metres','90 sec'], ['Lateral bounds','3 x 6 each side','90 sec'], ['Single-leg hops','3 x 6 each leg','60 sec']],
+  12: [['Depth jump from 18 inch box','5 x 3','120 sec'], ['Bounding for distance','3 x 25 metres','90 sec'], ['Lateral bounds','3 x 6 each side','90 sec'], ['Single-leg hops','3 x 8 each leg','60 sec']],
+  14: [['Reactive box jump, max effort','3 x 3','150 sec'], ['Depth jump to max vertical','3 x 3','150 sec'], ['Lateral bound and stick','3 x 4 each side','90 sec']],
+  15: [['Reactive box jump','4 x 3','150 sec'], ['Depth jump to max vertical','3 x 3','150 sec'], ['Lateral bound and stick','3 x 5 each side','90 sec']],
+  16: [['Reactive box jump','4 x 3','150 sec'], ['Depth jump to max vertical','4 x 3','150 sec'], ['Lateral bound and stick','3 x 5 each side','90 sec']],
+  17: [['Reactive box jump','5 x 3','180 sec'], ['Depth jump to max vertical','4 x 3','180 sec'], ['Lateral bound and stick','3 x 6 each side','90 sec']],
+  18: [['Reactive box jump, max effort','5 x 2','180 sec'], ['Depth jump to max vertical, max effort','5 x 2','180 sec'], ['Lateral bound and stick','3 x 6 each side','90 sec']],
+};
+
+function coreForBlock(block) {
+  if (block === 1) return [['Hollow body hold','3 x 20 sec','45 sec'], ['Plank','3 x 30 sec','45 sec'], ['Reverse crunch','3 x 10','45 sec'], ['Bicycle crunch','3 x 16','45 sec'], ['Pallof press','3 x 8 each side','45 sec']];
+  if (block === 2) return [['Hollow body hold','3 x 30 sec','45 sec'], ['Plank','3 x 45 sec','45 sec'], ['Reverse crunch','3 x 12','45 sec'], ['Bicycle crunch','3 x 20','45 sec'], ['Pallof press','3 x 10 each side','45 sec']];
+  return [['Hollow body hold','3 x 40 sec','45 sec'], ['Plank','3 x 60 sec','45 sec'], ['Reverse crunch','3 x 15','45 sec'], ['Bicycle crunch','3 x 24','45 sec'], ['Pallof press','3 x 12 each side','45 sec']];
+}
+
+function enduranceForBlock(block) {
+  if (block === 1) return { note: '3 rounds total, 60 sec rest between rounds', items: [['Kettlebell swings','8 reps'], ['Push-ups','8 reps'], ['Inverted rows or barbell rows','8 reps'], ['Walking lunges','8 reps each leg'], ['Burpees','8 reps']] };
+  if (block === 2) return { note: '3 rounds total, 45 sec rest between rounds', items: [['Kettlebell swings','10 reps'], ['Push-ups','10 reps'], ['Inverted rows or barbell rows','10 reps'], ['Walking lunges','10 reps each leg'], ['Burpees','10 reps']] };
+  return { note: '3 rounds total, 30 sec rest between rounds', items: [['Kettlebell swings','12 reps'], ['Push-ups','12 reps'], ['Inverted rows or barbell rows','12 reps'], ['Walking lunges','12 reps each leg'], ['Burpees','12 reps']] };
+}
+
 // Returns a working-weight + warm-up rows table for a main lift
 function liftRow(name, oneRM, cyclePct, setsReps, includeWarmup=true) {
   const work = round1(oneRM * cyclePct);
@@ -252,11 +346,24 @@ function isoRow(name, weight, reps) {
   return `<tr><td class="ex-name">${name}</td><td class="weight">${weight} kg</td><td>${reps}</td></tr>`;
 }
 
+function simpleRows(items) {
+  return items.map(item => `<tr><td class="ex-name">${item[0]}</td><td>${item[1]}</td><td>${item[2]}</td></tr>`).join('');
+}
+
+function twoColRows(items) {
+  return items.map(item => `<tr><td class="ex-name">${item[0]}</td><td>${item[1]}</td></tr>`).join('');
+}
+
 function buildContent() {
   const r = getOneRMs();
   updateSummary(r);
 
   let html = '';
+  html += '<div class="day">';
+  html += '<h3>How progression works</h3>';
+  html += '<div class="logic"><b>Power:</b> low reps are intentional. Day 1 and Day 3 stay around 10-20 high-quality explosive reps before heavy lifting. Day 8 carries the larger athletic plyometric dose. Stop a set when speed, jump height, or crispness drops.</div>';
+  html += '<div class="logic"><b>Conditioning:</b> rounds rise and rest shrinks across cycles. <b>Hypertrophy:</b> reps drop as weight rises. <b>Tests:</b> strength tests calculate loads; jump, sprint, run, and flexibility tests show whether the athletic qualities are actually improving.</div>';
+  html += '</div>';
 
   // Test cycles
   for (const tc of [1, 7, 13, 19]) {
@@ -267,12 +374,12 @@ function buildContent() {
     html += '<table><thead><tr><th>Day</th><th>Test</th><th>What to do</th></tr></thead><tbody>';
     html += '<tr><td><b>Day 1</b></td><td>Squat 5RM and Deadlift 5RM</td><td>Find your true 5 rep max on each. 3 minutes between heavy attempts.</td></tr>';
     html += '<tr><td><b>Day 3</b></td><td>Bench 5RM, OHP 5RM, Weighted Pull-up 5RM</td><td>Build up gradually. Pull-up = bodyweight + added weight (total system load).</td></tr>';
-    html += '<tr><td><b>Day 6</b></td><td>Vertical jump, Broad jump, 20m sprint</td><td>3 attempts each. Record best result in the test log above.</td></tr>';
-    html += '<tr><td><b>Day 7</b></td><td>Flexibility baseline</td><td>Record sit and reach, deep squat hold notes, and shoulder dislocate width in the test log above.</td></tr>';
-    html += '<tr><td><b>Day 8</b></td><td>1.5 mile run for time</td><td>Treadmill or outdoors flat route. Record time in the test log above.</td></tr>';
+    html += '<tr><td><b>Day 6</b></td><td>Vertical jump, Broad jump, 20m sprint</td><td>3 attempts each. This is a max-effort power session and a checkpoint for plyometric progression.</td></tr>';
+    html += '<tr><td><b>Day 7</b></td><td>Flexibility baseline</td><td>Record sit and reach, deep squat hold notes, and shoulder dislocate width. Use it to see whether mobility work is paying off.</td></tr>';
+    html += '<tr><td><b>Day 8</b></td><td>1.5 mile run for time</td><td>Treadmill or outdoors flat route. This checks whether conditioning is progressing.</td></tr>';
     html += '</tbody></table>';
     html += buildTestInputs(tc);
-    html += '<div class="note">After this cycle: update the inputs at the top of this page with your new 5RMs. All subsequent cycles will recalculate.</div>';
+    html += '<div class="note">After this cycle: update the top 5RM inputs. If jumps or sprint speed stall while strength rises, repeat the same plyometric level next block instead of rushing harder variants.</div>';
     html += '</div>';
   }
 
@@ -298,9 +405,12 @@ function buildContent() {
     html += liftRow('Back squat', r.sq, pct, sr);
     html += liftRow('Deadlift', r.dl, pct, '3 x ' + accReps);
     html += '</tbody></table>';
-    html += `<div class="sub" style="margin-top:8px"><b>Power (10 min):</b> ${block===1?'Box jumps to a 16 inch box, 4 x 3, rest 90 sec':block===2?'Depth jumps from a 12 inch box, 4 x 3, rest 90 sec':'Reactive box jumps, max effort, 4 x 3, rest 120 sec'}</div>`;
+    html += '<table style="margin-top:8px"><thead><tr><th>Power</th><th>Sets x Reps</th><th>Rest</th></tr></thead><tbody>';
+    html += simpleRows([lowerPlyo[cycle]]);
+    html += '</tbody></table>';
+    html += '<div class="note">Low reps are deliberate here: crisp jumps before heavy lifting, not fatigue work.</div>';
     html += `<table style="margin-top:8px"><thead><tr><th>Hypertrophy</th><th>Working weight</th><th>Sets x Reps</th></tr></thead><tbody>`;
-    html += isoRow('Bulgarian split squat (DB total)', round1(r.sq * 0.30 * pct), '3 x 8 each leg');
+    html += isoRow('Bulgarian split squat (DB total)', round1(r.sq * 0.30 * pct), `${repProgression.bss[cycle]} each leg`);
     html += '</tbody></table>';
     html += '</div>';
 
@@ -318,10 +428,13 @@ function buildContent() {
     html += liftRow('Bench press', r.bp, pct, sr);
     html += liftRow('Weighted pull-up (system load)', r.pu, pct, '4 x ' + accReps);
     html += '</tbody></table>';
-    html += `<div class="sub" style="margin-top:8px"><b>Power (10 min):</b> ${block===1?'Plyo push-up, 4 x 4, rest 90 sec':block===2?'Plyo push-up with clap, 4 x 4, rest 90 sec':'Plyo push-up to box, alternating, 4 x 3, rest 120 sec'}</div>`;
+    html += '<table style="margin-top:8px"><thead><tr><th>Power</th><th>Sets x Reps</th><th>Rest</th></tr></thead><tbody>';
+    html += simpleRows([upperPlyo[cycle]]);
+    html += '</tbody></table>';
+    html += '<div class="note">If you can casually do high reps, make each rep more explosive rather than adding volume.</div>';
     html += `<table style="margin-top:8px"><thead><tr><th>Hypertrophy</th><th>Working weight</th><th>Sets x Reps</th></tr></thead><tbody>`;
-    html += isoRow('Overhead press', round1(r.ohp * 0.85), '3 x 6');
-    html += isoRow('Dumbbell row (per dumbbell)', round1(r.bp * 0.30), '3 x 8 each arm');
+    html += isoRow('Overhead press', round1(r.ohp * 0.85), repProgression.ohp[cycle]);
+    html += isoRow('Dumbbell row (per dumbbell)', round1(r.bp * 0.30), `${repProgression.row[cycle]} each arm`);
     html += '</tbody></table>';
     html += '</div>';
 
@@ -329,7 +442,10 @@ function buildContent() {
     html += `<div class="day" id="c${cycle}-d4">`;
     html += `<h3>Cycle ${cycle} . Day 4 . Conditioning and Core</h3>`;
     html += `<div class="sub"><span class="med">MED to HIGH</span> . No weights for the intervals. Run on the treadmill or outdoors. Hill sprints work too.</div>`;
-    html += `<div class="sub"><b>Intervals:</b> ${block===1?'8 rounds, 30 sec hard run, 90 sec easy':block===2?'10 rounds, 30 sec hard run, 60 sec easy':'12 rounds, 30 sec hard run, 30 sec easy'}</div>`;
+    html += `<div class="sub"><b>Intervals:</b> ${conditioning[cycle]}</div>`;
+    html += '<table style="margin-top:8px"><thead><tr><th>Core</th><th>Sets x Reps</th><th>Rest</th></tr></thead><tbody>';
+    html += simpleRows(coreForBlock(block));
+    html += '</tbody></table>';
     html += '</div>';
 
     // Day 5: Active recovery
@@ -343,11 +459,10 @@ function buildContent() {
     html += `<h3>Cycle ${cycle} . Day 6 . Hypertrophy Full Body</h3>`;
     html += `<div class="sub"><span class="med">MED</span> . Block ${block} ${blockName}</div>`;
     html += '<table><thead><tr><th>Exercise</th><th>Working weight</th><th>Sets x Reps</th></tr></thead><tbody>';
-    const hyperReps = (cycle === 6 || cycle === 12 || cycle === 18) ? '3 x 6' : '3 x 8';
-    html += isoRow('Leg press', round1(r.sq * 0.80 * pct * 1.4), hyperReps);  // leg press allows higher loads
-    html += isoRow('Push press', round1(r.ohp * 1.10 * pct), '3 x 6');
-    html += isoRow('Pendlay row', round1(r.bp * 0.70 * pct), hyperReps);
-    html += isoRow('Hip thrust', round1(r.dl * 1.00 * pct), '3 x 8');
+    html += isoRow('Leg press', round1(r.sq * 0.80 * pct * 1.4), repProgression.legPress[cycle]);  // leg press allows higher loads
+    html += isoRow('Push press', round1(r.ohp * 1.10 * pct), repProgression.pushPress[cycle]);
+    html += isoRow('Pendlay row', round1(r.bp * 0.70 * pct), repProgression.row[cycle]);
+    html += isoRow('Hip thrust', round1(r.dl * 1.00 * pct), repProgression.hipThrust[cycle]);
     // Isolation
     let isoWeight = 0;
     if (iso.includes('biceps')) isoWeight = round1(r.bp * 0.175);
@@ -369,6 +484,14 @@ function buildContent() {
     html += `<div class="day" id="c${cycle}-d8">`;
     html += `<h3>Cycle ${cycle} . Day 8 . Athletic Day</h3>`;
     html += `<div class="sub"><span class="high">HIGH</span> . Bodyweight plyometrics + endurance circuit. No external weights apart from optional kettlebell.</div>`;
+    html += '<table><thead><tr><th>Plyometric / Athletic Work</th><th>Sets x Reps</th><th>Rest</th></tr></thead><tbody>';
+    html += simpleRows(athleticCircuit[cycle]);
+    html += '</tbody></table>';
+    const endurance = enduranceForBlock(block);
+    html += `<div class="sub" style="margin-top:8px"><b>Endurance circuit:</b> ${endurance.note}</div>`;
+    html += '<table style="margin-top:8px"><thead><tr><th>Exercise</th><th>Reps</th></tr></thead><tbody>';
+    html += twoColRows(endurance.items);
+    html += '</tbody></table>';
     html += '</div>';
 
     // Day 9: Long mobility
