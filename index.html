@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Unstoppable Weights</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, Segoe UI, Helvetica, Arial, sans-serif; margin: 0; padding: 0;
+         background: #fafaf7; color: #0a0a0a; line-height: 1.4; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 24px 18px 80px; }
+  h1 { font-size: 38px; margin: 0 0 4px; letter-spacing: 1px; }
+  .tag { color: #888; font-size: 13px; margin-bottom: 24px; }
+  .inputs { background: #fff; border: 2px solid #0a0a0a; padding: 18px; margin: 20px 0 30px; border-radius: 4px; position: sticky; top: 0; z-index: 10; }
+  .inputs h2 { margin: 0 0 12px; font-size: 18px; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px 14px; }
+  .field { display: flex; flex-direction: column; }
+  .field label { font-size: 11px; color: #555; margin-bottom: 3px; }
+  .field input { padding: 8px 10px; font-size: 15px; border: 1px solid #aaa; border-radius: 3px; font-family: inherit; }
+  .field input:focus { outline: 2px solid #0a0a0a; }
+  .test-log { margin-top: 12px; padding-top: 12px; border-top: 1px dashed #d4a800; }
+  .test-log h4 { margin: 0 0 8px; font-size: 13px; }
+  .metric-good { color: #548235; font-weight: bold; }
+  .metric-watch { color: #c00000; font-weight: bold; }
+  .summary { margin-top: 14px; padding-top: 12px; border-top: 1px dashed #aaa; font-size: 13px; color: #444; }
+  .summary span { font-weight: bold; color: #0a0a0a; }
+  .day { background: #fff; border: 1.5px solid #0a0a0a; border-radius: 4px; margin: 16px 0; padding: 16px; scroll-margin-top: 220px; }
+  .day h3 { margin: 0 0 4px; font-size: 17px; }
+  .day .sub { color: #888; font-size: 12px; margin-bottom: 10px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { background: #0a0a0a; color: #fff; text-align: left; padding: 7px 10px; font-size: 12px; font-weight: bold; }
+  td { padding: 6px 10px; border-bottom: 1px solid #ddd; }
+  tr:nth-child(even) td { background: #fafaf7; }
+  .ex-name { font-weight: bold; }
+  .weight { font-variant-numeric: tabular-nums; }
+  .nav { background: #fff; border: 1px solid #888; padding: 12px; margin: 20px 0; border-radius: 4px; }
+  .nav a { display: inline-block; margin: 3px 6px 3px 0; padding: 4px 8px; background: #f0f0eb; border-radius: 3px; text-decoration: none; color: #0a0a0a; font-size: 12px; }
+  .nav a:hover { background: #0a0a0a; color: #fff; }
+  .test-day { background: #fff8e6; border-color: #d4a800; }
+  .recovery-day { background: #f0f7f0; border-color: #548235; }
+  .high { color: #c00000; font-weight: bold; font-size: 11px; }
+  .med { color: #ed7d31; font-weight: bold; font-size: 11px; }
+  .low { color: #548235; font-weight: bold; font-size: 11px; }
+  .test-tag { color: #d4a800; font-weight: bold; font-size: 11px; }
+  .block-header { font-size: 22px; font-weight: bold; padding: 18px 10px 6px; border-bottom: 2px solid #0a0a0a; margin: 30px 0 12px; }
+  .note { font-size: 12px; color: #777; font-style: italic; margin-top: 6px; }
+  @media (max-width: 700px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>UNSTOPPABLE</h1>
+  <div class="tag">Weights companion. Enter your tested numbers once. The page calculates every weight for every cycle.</div>
+
+  <div class="inputs">
+    <h2>Your tested numbers</h2>
+    <div class="grid">
+      <div class="field"><label>Bodyweight (kg)</label><input id="bw" type="number" step="0.5" value="75"></div>
+      <div class="field"><label>Squat 5RM (kg)</label><input id="sq" type="number" step="0.5" value="100"></div>
+      <div class="field"><label>Bench 5RM (kg)</label><input id="bp" type="number" step="0.5" value="80"></div>
+      <div class="field"><label>Deadlift 5RM (kg)</label><input id="dl" type="number" step="0.5" value="120"></div>
+      <div class="field"><label>OHP 5RM (kg)</label><input id="ohp" type="number" step="0.5" value="50"></div>
+      <div class="field"><label>Pull-up 5RM (BW + added, kg)</label><input id="pu" type="number" step="0.5" value="95"></div>
+    </div>
+    <div class="summary" id="summary"></div>
+  </div>
+
+  <div class="nav">
+    <strong>Quick jump.</strong>
+    <a href="#cycle-1">Cycle 1 Test</a>
+    <a href="#cycle-2">Cycle 2</a>
+    <a href="#cycle-3">Cycle 3</a>
+    <a href="#cycle-4">Cycle 4</a>
+    <a href="#cycle-5">Cycle 5</a>
+    <a href="#cycle-6">Cycle 6</a>
+    <a href="#cycle-7">Cycle 7 Test</a>
+    <a href="#cycle-8">Cycle 8</a>
+    <a href="#cycle-9">Cycle 9</a>
+    <a href="#cycle-10">Cycle 10</a>
+    <a href="#cycle-11">Cycle 11</a>
+    <a href="#cycle-12">Cycle 12</a>
+    <a href="#cycle-13">Cycle 13 Test</a>
+    <a href="#cycle-14">Cycle 14</a>
+    <a href="#cycle-15">Cycle 15</a>
+    <a href="#cycle-16">Cycle 16</a>
+    <a href="#cycle-17">Cycle 17</a>
+    <a href="#cycle-18">Cycle 18</a>
+    <a href="#cycle-19">Cycle 19 Test</a>
+  </div>
+
+  <div id="content"></div>
+</div>
+
+<script>
+const strengthInputs = ['bw','sq','bp','dl','ohp','pu'];
+const testCycles = [1, 7, 13, 19];
+const testMetrics = [
+  { id: 'vj', label: 'Vertical jump (cm)', step: '0.1', higherIsBetter: true },
+  { id: 'bj', label: 'Broad jump (cm)', step: '0.1', higherIsBetter: true },
+  { id: 'sprint20', label: '20m sprint (sec)', step: '0.01', higherIsBetter: false },
+  { id: 'run15', label: '1.5 mile run (mm:ss or sec)', type: 'text', higherIsBetter: false, isTime: true },
+  { id: 'sitreach', label: 'Sit and reach (cm)', step: '0.1', higherIsBetter: true },
+  { id: 'squatdepth', label: 'Deep squat hold notes', type: 'text', placeholder: 'Pass / Fail / notes' },
+  { id: 'shoulderwidth', label: 'Shoulder dislocate width (cm)', step: '0.1', higherIsBetter: false },
+];
+const $ = id => document.getElementById(id);
+
+function testInputId(cycle, metricId) {
+  return `c${cycle}_${metricId}`;
+}
+
+function testInputIds() {
+  const ids = [];
+  testCycles.forEach(cycle => testMetrics.forEach(metric => ids.push(testInputId(cycle, metric.id))));
+  return ids;
+}
+
+function buildTestInputs(cycle) {
+  const cycleLabels = {1: 'Cycle 1 Initial Test', 7: 'Cycle 7 Mid Test', 13: 'Cycle 13 Mid Test', 19: 'Cycle 19 Final Test'};
+  let html = '';
+  html += `<div class="test-log"><h4>${cycleLabels[cycle]} inputs</h4>`;
+  html += '<div class="note">These values save automatically in this browser. Progress is compared against Cycle 1.</div>';
+  html += '<div class="grid">';
+  testMetrics.forEach(metric => {
+    const type = metric.type || 'number';
+    const step = metric.step ? ` step="${metric.step}"` : '';
+    const placeholder = metric.placeholder ? ` placeholder="${metric.placeholder}"` : '';
+    html += `<div class="field"><label>${metric.label}</label><input id="${testInputId(cycle, metric.id)}" type="${type}"${step}${placeholder}></div>`;
+  });
+  html += '</div></div>';
+  return html;
+}
+
+function loadInputs(ids) {
+  ids.forEach(k => {
+    const saved = localStorage.getItem('unst_' + k);
+    if (saved !== null && $(k)) $(k).value = saved;
+  });
+}
+
+function saveInputs(ids) {
+  ids.forEach(k => {
+    if ($(k)) localStorage.setItem('unst_' + k, $(k).value);
+  });
+}
+
+function epley(rm5) { return rm5 * (1 + 5/30); }
+function round1(v) { return Math.round(v * 2) / 2; }  // round to 0.5
+
+function getOneRMs() {
+  return {
+    bw: parseFloat($('bw').value) || 0,
+    sq: epley(parseFloat($('sq').value) || 0),
+    bp: epley(parseFloat($('bp').value) || 0),
+    dl: epley(parseFloat($('dl').value) || 0),
+    ohp: epley(parseFloat($('ohp').value) || 0),
+    pu: epley(parseFloat($('pu').value) || 0),
+  };
+}
+
+function parseTimeToSeconds(v) {
+  const raw = String(v || '').trim();
+  if (!raw) return null;
+  if (raw.includes(':')) {
+    const parts = raw.split(':').map(x => parseFloat(x));
+    if (parts.length === 2 && parts.every(x => !Number.isNaN(x))) return parts[0] * 60 + parts[1];
+  }
+  const n = parseFloat(raw);
+  return Number.isNaN(n) ? null : n;
+}
+
+function parseMetricValue(metric, cycle) {
+  const input = $(testInputId(cycle, metric.id));
+  if (!input) return metric.type === 'text' && !metric.isTime ? '' : null;
+  const value = input.value;
+  if (metric.type === 'text' && !metric.isTime) return String(value || '').trim();
+  if (metric.isTime) return parseTimeToSeconds(value);
+  const n = parseFloat(value);
+  return Number.isNaN(n) ? null : n;
+}
+
+function formatDelta(metric, baseline, current) {
+  if (baseline === null || current === null || baseline === '' || current === '') return 'enter baseline and latest';
+  if (typeof baseline === 'string' || typeof current === 'string') return current || 'not entered';
+  const delta = current - baseline;
+  const better = metric.higherIsBetter ? delta > 0 : delta < 0;
+  const same = Math.abs(delta) < 0.0001;
+  const amount = metric.isTime ? `${Math.abs(delta).toFixed(1)} sec` : `${Math.abs(delta).toFixed(1)}`;
+  const direction = same ? 'no change' : (better ? `improved by ${amount}` : `down by ${amount}`);
+  const cls = same || better ? 'metric-good' : 'metric-watch';
+  return `<span class="${cls}">${direction}</span>`;
+}
+
+function latestCycleWithValue(metric) {
+  for (const cycle of [...testCycles].reverse()) {
+    const value = parseMetricValue(metric, cycle);
+    if (value !== null && value !== '') return cycle;
+  }
+  return null;
+}
+
+function testProgressSummary() {
+  const parts = testMetrics.map(metric => {
+    const latestCycle = latestCycleWithValue(metric);
+    if (!latestCycle) return `${metric.label}: not entered`;
+    const baseline = parseMetricValue(metric, 1);
+    const latest = parseMetricValue(metric, latestCycle);
+    return `${metric.label}: Cycle ${latestCycle}, ${formatDelta(metric, baseline, latest)}`;
+  });
+  return parts.join(' . ');
+}
+
+// Cycle prescriptions
+const cyclePct = {
+  2: 0.60, 3: 0.65, 4: 0.70, 5: 0.75, 6: 0.75,
+  8: 0.70, 9: 0.75, 10: 0.80, 11: 0.85, 12: 0.85,
+  14: 0.80, 15: 0.85, 16: 0.90, 17: 0.92, 18: 0.95,
+};
+const cycleSetsReps = {
+  2: '5 x 5', 3: '5 x 5', 4: '5 x 4', 5: '4 x 4', 6: '5 x 3',
+  8: '5 x 4', 9: '4 x 4', 10: '4 x 3', 11: '3 x 3', 12: '4 x 3',
+  14: '4 x 3', 15: '3 x 3', 16: '2 x 3', 17: '2 x 2', 18: '1 x 3',
+};
+const cycleBlock = {
+  2: 1, 3: 1, 4: 1, 5: 1, 6: 1,
+  8: 2, 9: 2, 10: 2, 11: 2, 12: 2,
+  14: 3, 15: 3, 16: 3, 17: 3, 18: 3,
+};
+const isolationByCycle = {
+  2: 'Dumbbell biceps curl', 3: 'Dumbbell lateral raise', 4: 'Cable triceps pushdown',
+  5: 'Lying leg curl', 6: 'Standing calf raise',
+  8: 'Dumbbell biceps curl', 9: 'Dumbbell lateral raise', 10: 'Cable triceps pushdown',
+  11: 'Lying leg curl', 12: 'Standing calf raise',
+  14: 'Dumbbell biceps curl', 15: 'Dumbbell lateral raise', 16: 'Cable triceps pushdown',
+  17: 'Lying leg curl', 18: 'Standing calf raise',
+};
+
+// Returns a working-weight + warm-up rows table for a main lift
+function liftRow(name, oneRM, cyclePct, setsReps, includeWarmup=true) {
+  const work = round1(oneRM * cyclePct);
+  let html = `<tr><td class="ex-name">${name}</td>`;
+  if (includeWarmup) {
+    html += `<td class="weight">${round1(work*0.5)} kg x 5</td>`;
+    html += `<td class="weight">${round1(work*0.7)} kg x 3</td>`;
+    html += `<td class="weight">${round1(work*0.85)} kg x 1</td>`;
+  }
+  html += `<td class="weight"><b>${work} kg</b></td>`;
+  html += `<td>${setsReps}</td></tr>`;
+  return html;
+}
+
+function isoRow(name, weight, reps) {
+  return `<tr><td class="ex-name">${name}</td><td class="weight">${weight} kg</td><td>${reps}</td></tr>`;
+}
+
+function buildContent() {
+  const r = getOneRMs();
+  updateSummary(r);
+
+  let html = '';
+
+  // Test cycles
+  for (const tc of [1, 7, 13, 19]) {
+    const lbl = tc === 1 ? 'Initial Test' : (tc === 19 ? 'Final Test' : 'Mid Test and Deload');
+    html += `<div class="day test-day" id="cycle-${tc}">`;
+    html += `<h3>Cycle ${tc} . ${lbl}</h3>`;
+    html += `<div class="sub"><span class="test-tag">TEST CYCLE</span> . Run all 9 days. The 4 test days are listed below. Other days are recovery and mobility.</div>`;
+    html += '<table><thead><tr><th>Day</th><th>Test</th><th>What to do</th></tr></thead><tbody>';
+    html += '<tr><td><b>Day 1</b></td><td>Squat 5RM and Deadlift 5RM</td><td>Find your true 5 rep max on each. 3 minutes between heavy attempts.</td></tr>';
+    html += '<tr><td><b>Day 3</b></td><td>Bench 5RM, OHP 5RM, Weighted Pull-up 5RM</td><td>Build up gradually. Pull-up = bodyweight + added weight (total system load).</td></tr>';
+    html += '<tr><td><b>Day 6</b></td><td>Vertical jump, Broad jump, 20m sprint</td><td>3 attempts each. Record best result in the test log above.</td></tr>';
+    html += '<tr><td><b>Day 7</b></td><td>Flexibility baseline</td><td>Record sit and reach, deep squat hold notes, and shoulder dislocate width in the test log above.</td></tr>';
+    html += '<tr><td><b>Day 8</b></td><td>1.5 mile run for time</td><td>Treadmill or outdoors flat route. Record time in the test log above.</td></tr>';
+    html += '</tbody></table>';
+    html += buildTestInputs(tc);
+    html += '<div class="note">After this cycle: update the inputs at the top of this page with your new 5RMs. All subsequent cycles will recalculate.</div>';
+    html += '</div>';
+  }
+
+  // Training cycles
+  for (const cycle of [2,3,4,5,6,8,9,10,11,12,14,15,16,17,18]) {
+    const pct = cyclePct[cycle];
+    const sr = cycleSetsReps[cycle];
+    const block = cycleBlock[cycle];
+    const blockName = block === 1 ? 'Foundation' : (block === 2 ? 'Build' : 'Peak');
+    const iso = isolationByCycle[cycle];
+
+    if (cycle === 2 || cycle === 8 || cycle === 14) {
+      html += `<div class="block-header">Block ${block} . ${blockName}</div>`;
+    }
+
+    // Day 1: Lower Strength + Power
+    const sr3 = sr.split(' x ');
+    const accReps = sr3[1];
+    html += `<div class="day" id="c${cycle}-d1">`;
+    html += `<h3>Cycle ${cycle} . Day 1 . Lower Strength and Power</h3>`;
+    html += `<div class="sub"><span class="high">HIGH</span> . ${Math.round(pct*100)}% of 1RM . Block ${block} ${blockName}</div>`;
+    html += '<table><thead><tr><th>Exercise</th><th>Warm up 1</th><th>Warm up 2</th><th>Warm up 3</th><th>Working weight</th><th>Sets x Reps</th></tr></thead><tbody>';
+    html += liftRow('Back squat', r.sq, pct, sr);
+    html += liftRow('Deadlift', r.dl, pct, '3 x ' + accReps);
+    html += '</tbody></table>';
+    html += `<div class="sub" style="margin-top:8px"><b>Power (10 min):</b> ${block===1?'Box jumps to a 16 inch box, 4 x 3, rest 90 sec':block===2?'Depth jumps from a 12 inch box, 4 x 3, rest 90 sec':'Reactive box jumps, max effort, 4 x 3, rest 120 sec'}</div>`;
+    html += `<table style="margin-top:8px"><thead><tr><th>Hypertrophy</th><th>Working weight</th><th>Sets x Reps</th></tr></thead><tbody>`;
+    html += isoRow('Bulgarian split squat (DB total)', round1(r.sq * 0.30 * pct), '3 x 8 each leg');
+    html += '</tbody></table>';
+    html += '</div>';
+
+    // Day 2: Active recovery
+    html += `<div class="day recovery-day" id="c${cycle}-d2">`;
+    html += `<h3>Cycle ${cycle} . Day 2 . Active Recovery</h3>`;
+    html += `<div class="sub"><span class="low">LOW</span> . No working weights. Easy run or bike (30 min) plus mobility.</div>`;
+    html += '</div>';
+
+    // Day 3: Upper Strength + Power
+    html += `<div class="day" id="c${cycle}-d3">`;
+    html += `<h3>Cycle ${cycle} . Day 3 . Upper Strength and Power</h3>`;
+    html += `<div class="sub"><span class="high">HIGH</span> . ${Math.round(pct*100)}% of 1RM . Block ${block} ${blockName}</div>`;
+    html += '<table><thead><tr><th>Exercise</th><th>Warm up 1</th><th>Warm up 2</th><th>Warm up 3</th><th>Working weight</th><th>Sets x Reps</th></tr></thead><tbody>';
+    html += liftRow('Bench press', r.bp, pct, sr);
+    html += liftRow('Weighted pull-up (system load)', r.pu, pct, '4 x ' + accReps);
+    html += '</tbody></table>';
+    html += `<div class="sub" style="margin-top:8px"><b>Power (10 min):</b> ${block===1?'Plyo push-up, 4 x 4, rest 90 sec':block===2?'Plyo push-up with clap, 4 x 4, rest 90 sec':'Plyo push-up to box, alternating, 4 x 3, rest 120 sec'}</div>`;
+    html += `<table style="margin-top:8px"><thead><tr><th>Hypertrophy</th><th>Working weight</th><th>Sets x Reps</th></tr></thead><tbody>`;
+    html += isoRow('Overhead press', round1(r.ohp * 0.85), '3 x 6');
+    html += isoRow('Dumbbell row (per dumbbell)', round1(r.bp * 0.30), '3 x 8 each arm');
+    html += '</tbody></table>';
+    html += '</div>';
+
+    // Day 4: Conditioning + Core
+    html += `<div class="day" id="c${cycle}-d4">`;
+    html += `<h3>Cycle ${cycle} . Day 4 . Conditioning and Core</h3>`;
+    html += `<div class="sub"><span class="med">MED to HIGH</span> . No weights for the intervals. Run on the treadmill or outdoors. Hill sprints work too.</div>`;
+    html += `<div class="sub"><b>Intervals:</b> ${block===1?'8 rounds, 30 sec hard run, 90 sec easy':block===2?'10 rounds, 30 sec hard run, 60 sec easy':'12 rounds, 30 sec hard run, 30 sec easy'}</div>`;
+    html += '</div>';
+
+    // Day 5: Active recovery
+    html += `<div class="day recovery-day" id="c${cycle}-d5">`;
+    html += `<h3>Cycle ${cycle} . Day 5 . Active Recovery</h3>`;
+    html += `<div class="sub"><span class="low">LOW</span> . Easy run or bike (30 min) plus mobility.</div>`;
+    html += '</div>';
+
+    // Day 6: Hypertrophy
+    html += `<div class="day" id="c${cycle}-d6">`;
+    html += `<h3>Cycle ${cycle} . Day 6 . Hypertrophy Full Body</h3>`;
+    html += `<div class="sub"><span class="med">MED</span> . Block ${block} ${blockName}</div>`;
+    html += '<table><thead><tr><th>Exercise</th><th>Working weight</th><th>Sets x Reps</th></tr></thead><tbody>';
+    const hyperReps = (cycle === 6 || cycle === 12 || cycle === 18) ? '3 x 6' : '3 x 8';
+    html += isoRow('Leg press', round1(r.sq * 0.80 * pct * 1.4), hyperReps);  // leg press allows higher loads
+    html += isoRow('Push press', round1(r.ohp * 1.10 * pct), '3 x 6');
+    html += isoRow('Pendlay row', round1(r.bp * 0.70 * pct), hyperReps);
+    html += isoRow('Hip thrust', round1(r.dl * 1.00 * pct), '3 x 8');
+    // Isolation
+    let isoWeight = 0;
+    if (iso.includes('biceps')) isoWeight = round1(r.bp * 0.175);
+    else if (iso.includes('lateral')) isoWeight = round1(r.ohp * 0.07);
+    else if (iso.includes('triceps')) isoWeight = round1(r.bp * 0.25);
+    else if (iso.includes('leg curl')) isoWeight = round1(r.dl * 0.25);
+    else if (iso.includes('calf')) isoWeight = round1(r.sq * 0.80);
+    html += isoRow(iso, isoWeight, '3 x 12');
+    html += '</tbody></table>';
+    html += '</div>';
+
+    // Day 7: Deep flexibility
+    html += `<div class="day recovery-day" id="c${cycle}-d7">`;
+    html += `<h3>Cycle ${cycle} . Day 7 . Deep Flexibility</h3>`;
+    html += `<div class="sub"><span class="low">LOW</span> . No weights. ${block===1?'Intermediate':block===2?'Advanced':'Expert'} flexibility routine plus easy run or bike (15 min).</div>`;
+    html += '</div>';
+
+    // Day 8: Athletic Day
+    html += `<div class="day" id="c${cycle}-d8">`;
+    html += `<h3>Cycle ${cycle} . Day 8 . Athletic Day</h3>`;
+    html += `<div class="sub"><span class="high">HIGH</span> . Bodyweight plyometrics + endurance circuit. No external weights apart from optional kettlebell.</div>`;
+    html += '</div>';
+
+    // Day 9: Long mobility
+    html += `<div class="day recovery-day" id="c${cycle}-d9">`;
+    html += `<h3>Cycle ${cycle} . Day 9 . Long Mobility</h3>`;
+    html += `<div class="sub"><span class="low">LOW</span> . No weights. Long easy run or bike (40 min) plus full body mobility (15 min).</div>`;
+    html += '</div>';
+  }
+
+  document.getElementById('content').innerHTML = html;
+}
+
+function updateSummary(r = getOneRMs()) {
+  const summary = document.getElementById('summary');
+  summary.innerHTML = `<span>Calculated 1RM:</span> Squat ${round1(r.sq)} kg . Bench ${round1(r.bp)} kg . Deadlift ${round1(r.dl)} kg . OHP ${round1(r.ohp)} kg . Pull-up ${round1(r.pu)} kg total system load.<br><span>Test progress:</span> ${testProgressSummary()}`;
+}
+
+function attachTestInputListeners() {
+  testInputIds().forEach(k => {
+    const el = $(k);
+    if (el) el.addEventListener('input', () => { saveInputs([k]); updateSummary(); });
+  });
+}
+
+loadInputs(strengthInputs);
+buildContent();
+loadInputs(testInputIds());
+attachTestInputListeners();
+updateSummary();
+strengthInputs.forEach(k => $(k).addEventListener('input', () => {
+  saveInputs(strengthInputs);
+  buildContent();
+  loadInputs(testInputIds());
+  attachTestInputListeners();
+  updateSummary();
+}));
+</script>
+</body>
+</html>
